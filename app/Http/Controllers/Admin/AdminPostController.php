@@ -14,6 +14,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AdminPostController extends Controller
@@ -186,11 +187,19 @@ class AdminPostController extends Controller
     private function storeUploadedFile(UploadedFile $file, CloudinaryMediaService $cloudinary): array
     {
         if ($cloudinary->enabled()) {
-            return $cloudinary->upload($file);
+            try {
+                return $cloudinary->upload($file);
+            } catch (\Throwable $e) {
+                throw ValidationException::withMessages([
+                    'media_files' => 'Cloudinary upload failed. Check CLOUDINARY_* env vars and active API key/secret.',
+                ]);
+            }
         }
 
         if ($cloudinary->required()) {
-            throw new \RuntimeException('Cloudinary is required but not configured.');
+            throw ValidationException::withMessages([
+                'media_files' => 'Cloudinary is required but not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.',
+            ]);
         }
 
         $extension = strtolower($file->getClientOriginalExtension());
