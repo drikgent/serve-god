@@ -55,8 +55,19 @@ This repo now includes a `render.yaml` blueprint for one Laravel web service plu
 ### Important behavior on Render
 
 - Startup runs migrations automatically (`php artisan migrate --force`).
-- Uploads are persisted to Render Disk via `/var/data/uploads` and linked to `public/uploads`.
+- Startup seeds admin/demo records (`php artisan db:seed --class=Database\\Seeders\\DatabaseSeeder --force`).
 - Sessions/cache default to file storage in production for first-time simplicity.
+
+### Cloudinary media storage (recommended on free plan)
+
+Render free services do not persist local uploads reliably. To make media permanent, set:
+
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+- `CLOUDINARY_FOLDER` (optional, default: `serve-god`)
+
+When these are set, new image/video uploads are stored on Cloudinary automatically.
 
 ### Optional: import your local SQL dump
 

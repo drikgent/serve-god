@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Services\Media\CloudinaryMediaService;
 use App\Services\Media\VideoThumbnailGenerator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -151,39 +154,67 @@ class AdminPostController extends Controller
             return;
         }
 
+        $cloudinary = app(CloudinaryMediaService::class);
+        $existingCount = $post->media()->count();
+
         foreach ($request->file('media_files') as $index => $file) {
-            $extension = strtolower($file->getClientOriginalExtension());
-            $directory = in_array($extension, ['mp4', 'webm', 'mov'], true) ? 'videos' : 'images';
-            $filename = Str::uuid().'.'.$extension;
-
-            $file->move(public_path("uploads/{$directory}"), $filename);
-
-            $relativePath = "uploads/{$directory}/{$filename}";
-            $type = $directory === 'videos' ? 'video' : 'image';
-            $thumbnailPath = null;
-
-            if ($type === 'video') {
-                $thumbnailPath = app(VideoThumbnailGenerator::class)->generate($relativePath);
-            }
+            $upload = $this->storeUploadedFile($file, $cloudinary);
+            $type = $upload['type'];
 
             $media = $post->media()->create([
                 'uploader_id' => $request->user()->id,
                 'type' => $type,
-                'title' => $post->title.' '.($post->media()->count() + $index + 1),
-                'file_path' => $relativePath,
-                'thumbnail_path' => $thumbnailPath,
+                'title' => $post->title.' '.($existingCount + $index + 1),
+                'file_path' => $upload['file_path'],
+                'thumbnail_path' => $upload['thumbnail_path'],
                 'alt_text' => $post->title,
-                'sort_order' => $post->media()->count() + $index,
-                'is_featured' => $post->media()->count() === 0 && $index === 0,
-                'source' => 'upload',
+                'sort_order' => $existingCount + $index,
+                'is_featured' => $existingCount === 0 && $index === 0,
+                'source' => $upload['source'],
             ]);
 
             if (! $post->featured_media_url) {
                 $post->update([
-                    'featured_media_url' => $type === 'video' ? $media->getRawOriginal('thumbnail_path') : $relativePath,
+                    'featured_media_url' => $type === 'video'
+                        ? ($media->getRawOriginal('thumbnail_path') ?: $media->getRawOriginal('file_path'))
+                        : $media->getRawOriginal('file_path'),
                     'featured_media_type' => $type,
                 ]);
             }
         }
+    }
+
+    private function storeUploadedFile(UploadedFile $file, CloudinaryMediaService $cloudinary): array
+    {
+        if ($cloudinary->enabled()) {
+            try {
+                return $cloudinary->upload($file);
+            } catch (\Throwable $e) {
+                Log::warning('Cloudinary upload failed, using local storage fallback.', [
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        $extension = strtolower($file->getClientOriginalExtension());
+        $directory = in_array($extension, ['mp4', 'webm', 'mov', 'ogg'], true) ? 'videos' : 'images';
+        $filename = Str::uuid().'.'.$extension;
+
+        $file->move(public_path("uploads/{$directory}"), $filename);
+
+        $relativePath = "uploads/{$directory}/{$filename}";
+        $type = $directory === 'videos' ? 'video' : 'image';
+        $thumbnailPath = null;
+
+        if ($type === 'video') {
+            $thumbnailPath = app(VideoThumbnailGenerator::class)->generate($relativePath);
+        }
+
+        return [
+            'type' => $type,
+            'file_path' => $relativePath,
+            'thumbnail_path' => $thumbnailPath,
+            'source' => 'upload',
+        ];
     }
 }

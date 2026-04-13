@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Media;
+use App\Services\Media\CloudinaryMediaService;
 use App\Services\Media\VideoThumbnailGenerator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -51,26 +54,19 @@ class AdminMediaController extends Controller
             $rawCurrentPath = $media->getRawOriginal('file_path');
             $this->deleteLocalFile($rawCurrentPath);
 
-            $file = $request->file('replacement_file');
-            $extension = strtolower($file->getClientOriginalExtension());
-            $directory = in_array($extension, ['mp4', 'webm', 'mov'], true) ? 'videos' : 'images';
-            $filename = Str::uuid().'.'.$extension;
-            $file->move(public_path("uploads/{$directory}"), $filename);
+            $upload = $this->storeUploadedFile(
+                $request->file('replacement_file'),
+                app(CloudinaryMediaService::class)
+            );
+            $newType = $upload['type'];
 
-            $newRelativePath = "uploads/{$directory}/{$filename}";
-            $newType = $directory === 'videos' ? 'video' : 'image';
-            $newThumbnailPath = null;
-
-            if ($newType === 'video') {
-                $newThumbnailPath = app(VideoThumbnailGenerator::class)->generate($newRelativePath);
-            }
-
-            $media->file_path = $newRelativePath;
+            $media->file_path = $upload['file_path'];
             $media->type = $newType;
+            $media->source = $upload['source'];
 
             if ($newType === 'video') {
                 $this->deleteLocalFile($media->getRawOriginal('thumbnail_path'));
-                $media->thumbnail_path = $newThumbnailPath;
+                $media->thumbnail_path = $upload['thumbnail_path'];
             } else {
                 $media->thumbnail_path = null;
             }
@@ -129,5 +125,38 @@ class AdminMediaController extends Controller
         if (is_file($fullPath)) {
             @unlink($fullPath);
         }
+    }
+
+    private function storeUploadedFile(UploadedFile $file, CloudinaryMediaService $cloudinary): array
+    {
+        if ($cloudinary->enabled()) {
+            try {
+                return $cloudinary->upload($file);
+            } catch (\Throwable $e) {
+                Log::warning('Cloudinary upload failed, using local storage fallback.', [
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        $extension = strtolower($file->getClientOriginalExtension());
+        $directory = in_array($extension, ['mp4', 'webm', 'mov', 'ogg'], true) ? 'videos' : 'images';
+        $filename = Str::uuid().'.'.$extension;
+        $file->move(public_path("uploads/{$directory}"), $filename);
+
+        $relativePath = "uploads/{$directory}/{$filename}";
+        $type = $directory === 'videos' ? 'video' : 'image';
+        $thumbnailPath = null;
+
+        if ($type === 'video') {
+            $thumbnailPath = app(VideoThumbnailGenerator::class)->generate($relativePath);
+        }
+
+        return [
+            'type' => $type,
+            'file_path' => $relativePath,
+            'thumbnail_path' => $thumbnailPath,
+            'source' => 'upload',
+        ];
     }
 }
