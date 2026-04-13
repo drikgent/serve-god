@@ -14,7 +14,7 @@ FROM composer:2 AS composer-build
 WORKDIR /app
 
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+RUN composer install --no-dev --no-scripts --optimize-autoloader --no-interaction --prefer-dist
 
 
 FROM php:8.3-cli-bookworm
