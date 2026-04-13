@@ -21,13 +21,9 @@ FROM php:8.3-cli-bookworm
 WORKDIR /opt/render/project/src
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg \
-    git \
     unzip \
-    libicu-dev \
     libpq-dev \
-    libzip-dev \
-    && docker-php-ext-install -j"$(nproc)" bcmath intl mbstring pdo pdo_pgsql zip \
+    && docker-php-ext-install -j"$(nproc)" pdo pdo_pgsql \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . .
