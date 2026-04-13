@@ -1185,7 +1185,13 @@ button {
     }
 
     .masonry {
-        column-count: 1;
+        column-count: 2;
+        column-gap: 0.75rem;
+    }
+
+    .post-card {
+        margin: 0 0 0.75rem;
+        border-radius: 20px;
     }
 
     .category-grid,
