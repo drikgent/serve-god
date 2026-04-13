@@ -17,6 +17,12 @@
         @endif
 
         <div class="admin-panel">
+            @if($errors->any())
+                <div class="flash error-text">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
             <label>Title</label>
             <input type="text" name="title" value="{{ old('title', $post->title) }}" required>
 
@@ -54,6 +60,12 @@
 
             <label>Upload images or videos</label>
             <input type="file" id="media_files" name="media_files[]" multiple accept="image/*,video/*">
+            @error('media_files')
+                <p class="error-text">{{ $message }}</p>
+            @enderror
+            @error('media_files.*')
+                <p class="error-text">{{ $message }}</p>
+            @enderror
             <div id="media-upload-preview" class="upload-preview-grid"></div>
 
             <button type="submit" class="primary-button full-width">{{ $post->exists ? 'Save changes' : 'Publish draft' }}</button>
