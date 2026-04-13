@@ -29,7 +29,7 @@ php artisan db:seed --class=Database\\Seeders\\DatabaseSeeder --force
 php artisan media:generate-thumbnails
 
 if [ "${CLOUDINARY_MIGRATE_ON_BOOT:-false}" = "true" ]; then
-  php artisan media:migrate-to-cloudinary
+  php artisan media:migrate-to-cloudinary || true
 fi
 
 php artisan config:cache
