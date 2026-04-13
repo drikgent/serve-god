@@ -26,6 +26,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-install -j"$(nproc)" pdo pdo_pgsql \
     && rm -rf /var/lib/apt/lists/*
 
+RUN { \
+    echo "upload_max_filesize=64M"; \
+    echo "post_max_size=64M"; \
+    echo "max_execution_time=120"; \
+    echo "max_input_time=120"; \
+    echo "memory_limit=256M"; \
+  } > /usr/local/etc/php/conf.d/uploads.ini
+
 COPY . .
 COPY --from=composer-build /app/vendor ./vendor
 COPY --from=node-build /app/public/build ./public/build
