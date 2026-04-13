@@ -4,16 +4,18 @@ set -euo pipefail
 ROOT_DIR="${ROOT_DIR:-/opt/render/project/src}"
 cd "$ROOT_DIR"
 
-mkdir -p /var/data/uploads/images
-mkdir -p /var/data/uploads/videos
-mkdir -p /var/data/uploads/thumbnails
+UPLOADS_DIR="${UPLOADS_DIR:-$ROOT_DIR/storage/app/public/uploads}"
+
+mkdir -p "$UPLOADS_DIR/images"
+mkdir -p "$UPLOADS_DIR/videos"
+mkdir -p "$UPLOADS_DIR/thumbnails"
 
 if [ -e public/uploads ] && [ ! -L public/uploads ]; then
   rm -rf public/uploads
 fi
 
 if [ ! -L public/uploads ]; then
-  ln -s /var/data/uploads public/uploads
+  ln -s "$UPLOADS_DIR" public/uploads
 fi
 
 php artisan migrate --force
