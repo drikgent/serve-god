@@ -10,6 +10,13 @@ mkdir -p "$UPLOADS_DIR/images"
 mkdir -p "$UPLOADS_DIR/videos"
 mkdir -p "$UPLOADS_DIR/thumbnails"
 
+# If the repo already contains uploads, seed them into the runtime uploads directory once.
+if [ -d public/uploads ] && [ ! -L public/uploads ]; then
+  if [ -z "$(find "$UPLOADS_DIR" -mindepth 1 -print -quit 2>/dev/null)" ]; then
+    cp -a public/uploads/. "$UPLOADS_DIR"/
+  fi
+fi
+
 if [ -e public/uploads ] && [ ! -L public/uploads ]; then
   rm -rf public/uploads
 fi
