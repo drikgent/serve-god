@@ -1,0 +1,58 @@
+services:
+  - type: web
+    name: serve-god-web
+    runtime: php
+    plan: free
+    buildCommand: composer install --no-dev --optimize-autoloader --no-interaction
+    startCommand: bash scripts/render-start.sh
+    healthCheckPath: /
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        sync: false
+      - key: APP_KEY
+        sync: false
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: serve-god-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: serve-god-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: serve-god-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: serve-god-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: serve-god-db
+          property: password
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_STORE
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: FFMPEG_PATH
+        value: ffmpeg
+    disk:
+      name: uploads
+      mountPath: /var/data
+      sizeGB: 1
+
+databases:
+  - name: serve-god-db
+    databaseName: serve_god
+    plan: free
