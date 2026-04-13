@@ -4,6 +4,7 @@ namespace App\Services\Media;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -18,20 +19,53 @@ class CloudinaryMediaService
 
     public function upload(UploadedFile $file): array
     {
+        return $this->uploadFromPath(
+            $file->getRealPath(),
+            $file->getClientOriginalName(),
+            $this->isVideoFile($file->getClientOriginalName(), (string) $file->getMimeType())
+        );
+    }
+
+    public function uploadFromLocal(string $absolutePath, ?string $originalName = null): array
+    {
+        if (! is_file($absolutePath)) {
+            throw new RuntimeException("File not found for Cloudinary upload: {$absolutePath}");
+        }
+
+        $name = $originalName ?: basename($absolutePath);
+        $mime = (string) File::mimeType($absolutePath);
+
+        return $this->uploadFromPath(
+            $absolutePath,
+            $name,
+            $this->isVideoFile($name, $mime)
+        );
+    }
+
+    public function required(): bool
+    {
+        return (bool) config('cloudinary.required', false);
+    }
+
+    private function uploadFromPath(string $filePath, string $fileName, bool $isVideo): array
+    {
         if (! $this->enabled()) {
             throw new RuntimeException('Cloudinary credentials are not configured.');
         }
 
-        $resourceType = $this->isVideo($file) ? 'video' : 'image';
+        $resourceType = $isVideo ? 'video' : 'image';
         $timestamp = time();
         $folder = trim((string) config('cloudinary.folder', 'serve-god'), '/');
-
-        $signingParams = [
-            'timestamp' => $timestamp,
-        ];
+        $signingParams = ['timestamp' => $timestamp];
 
         if ($folder !== '') {
             $signingParams['folder'] = $folder;
+        }
+
+        $handle = fopen($filePath, 'r');
+
+        if ($handle === false) {
+            throw new RuntimeException('Unable to read file for Cloudinary upload.');
         }
 
         $response = Http::asMultipart()
@@ -39,8 +73,8 @@ class CloudinaryMediaService
             ->post($this->uploadUrl($resourceType), [
                 [
                     'name' => 'file',
-                    'contents' => fopen($file->getRealPath(), 'r'),
-                    'filename' => $file->getClientOriginalName(),
+                    'contents' => $handle,
+                    'filename' => $fileName,
                 ],
                 [
                     'name' => 'api_key',
@@ -60,6 +94,8 @@ class CloudinaryMediaService
                 ]] : []),
             ]);
 
+        fclose($handle);
+
         if (! $response->successful()) {
             throw new RuntimeException('Cloudinary upload failed: '.$response->body());
         }
@@ -71,13 +107,12 @@ class CloudinaryMediaService
             throw new RuntimeException('Cloudinary upload returned no secure_url.');
         }
 
-        $thumbUrl = null;
+        $thumbnailUrl = null;
 
         if ($resourceType === 'video') {
             $publicId = (string) ($payload['public_id'] ?? '');
-
             if ($publicId !== '') {
-                $thumbUrl = sprintf(
+                $thumbnailUrl = sprintf(
                     'https://res.cloudinary.com/%s/video/upload/so_1/%s.jpg',
                     config('cloudinary.cloud_name'),
                     $publicId
@@ -88,7 +123,7 @@ class CloudinaryMediaService
         return [
             'type' => $resourceType,
             'file_path' => $fileUrl,
-            'thumbnail_path' => $thumbUrl,
+            'thumbnail_path' => $thumbnailUrl,
             'source' => 'cloudinary',
         ];
     }
@@ -112,14 +147,14 @@ class CloudinaryMediaService
         return sha1($query.config('cloudinary.api_secret'));
     }
 
-    private function isVideo(UploadedFile $file): bool
+    private function isVideoFile(string $fileName, string $mime): bool
     {
-        $mime = (string) $file->getMimeType();
-
         if (Str::startsWith($mime, 'video/')) {
             return true;
         }
 
-        return in_array(strtolower($file->getClientOriginalExtension()), ['mp4', 'webm', 'mov', 'ogg'], true);
+        $extension = Str::lower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        return in_array($extension, ['mp4', 'webm', 'mov', 'ogg'], true);
     }
 }

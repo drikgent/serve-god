@@ -74,10 +74,10 @@ class Post extends Model
 
     public function getFeaturedMediaUrlAttribute(?string $value): ?string
     {
-        return $this->resolveMediaUrl($value);
+        return $this->resolveMediaUrl($value, (string) $this->featured_media_type);
     }
 
-    private function resolveMediaUrl(?string $path): ?string
+    private function resolveMediaUrl(?string $path, string $mediaType = ''): ?string
     {
         if (! $path) {
             return null;
@@ -88,6 +88,21 @@ class Post extends Model
         }
 
         $cleanPath = ltrim($path, '/');
+
+        if (Str::startsWith($cleanPath, 'public/uploads/')) {
+            $cleanPath = Str::after($cleanPath, 'public/');
+        }
+
+        if (! Str::contains($cleanPath, '/')) {
+            if ($mediaType === 'video') {
+                $cleanPath = 'uploads/thumbnails/'.$cleanPath;
+            } else {
+                $extension = Str::lower(pathinfo($cleanPath, PATHINFO_EXTENSION));
+                $folder = in_array($extension, ['mp4', 'webm', 'mov', 'ogg'], true) ? 'videos' : 'images';
+                $cleanPath = 'uploads/'.$folder.'/'.$cleanPath;
+            }
+        }
+
         $request = request();
 
         if (! $request) {

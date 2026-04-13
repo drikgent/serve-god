@@ -27,6 +27,11 @@ fi
 php artisan migrate --force
 php artisan db:seed --class=Database\\Seeders\\DatabaseSeeder --force
 php artisan media:generate-thumbnails
+
+if [ "${CLOUDINARY_MIGRATE_ON_BOOT:-false}" = "true" ]; then
+  php artisan media:migrate-to-cloudinary
+fi
+
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache

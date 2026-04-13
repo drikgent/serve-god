@@ -10,7 +10,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -130,13 +129,11 @@ class AdminMediaController extends Controller
     private function storeUploadedFile(UploadedFile $file, CloudinaryMediaService $cloudinary): array
     {
         if ($cloudinary->enabled()) {
-            try {
-                return $cloudinary->upload($file);
-            } catch (\Throwable $e) {
-                Log::warning('Cloudinary upload failed, using local storage fallback.', [
-                    'error' => $e->getMessage(),
-                ]);
-            }
+            return $cloudinary->upload($file);
+        }
+
+        if ($cloudinary->required()) {
+            throw new \RuntimeException('Cloudinary is required but not configured.');
         }
 
         $extension = strtolower($file->getClientOriginalExtension());

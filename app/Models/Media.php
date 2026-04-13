@@ -43,15 +43,15 @@ class Media extends Model
 
     public function getFilePathAttribute(?string $value): ?string
     {
-        return $this->resolveMediaUrl($value);
+        return $this->resolveMediaUrl($value, false);
     }
 
     public function getThumbnailPathAttribute(?string $value): ?string
     {
-        return $this->resolveMediaUrl($value);
+        return $this->resolveMediaUrl($value, true);
     }
 
-    private function resolveMediaUrl(?string $path): ?string
+    private function resolveMediaUrl(?string $path, bool $isThumbnail): ?string
     {
         if (! $path) {
             return null;
@@ -62,6 +62,21 @@ class Media extends Model
         }
 
         $cleanPath = ltrim($path, '/');
+
+        if (Str::startsWith($cleanPath, 'public/uploads/')) {
+            $cleanPath = Str::after($cleanPath, 'public/');
+        }
+
+        if (! Str::contains($cleanPath, '/')) {
+            if ($isThumbnail) {
+                $cleanPath = 'uploads/thumbnails/'.$cleanPath;
+            } else {
+                $extension = Str::lower(pathinfo($cleanPath, PATHINFO_EXTENSION));
+                $folder = in_array($extension, ['mp4', 'webm', 'mov', 'ogg'], true) ? 'videos' : 'images';
+                $cleanPath = 'uploads/'.$folder.'/'.$cleanPath;
+            }
+        }
+
         $request = request();
 
         if (! $request) {

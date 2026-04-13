@@ -66,8 +66,17 @@ Render free services do not persist local uploads reliably. To make media perman
 - `CLOUDINARY_API_KEY`
 - `CLOUDINARY_API_SECRET`
 - `CLOUDINARY_FOLDER` (optional, default: `serve-god`)
+- `CLOUDINARY_REQUIRED` (`true` to fail uploads if Cloudinary is unavailable)
 
 When these are set, new image/video uploads are stored on Cloudinary automatically.
+
+To migrate existing local media records/files to Cloudinary:
+
+1. Deploy with valid Cloudinary env vars.
+2. Open service shell and run:
+   - `php artisan media:migrate-to-cloudinary`
+
+If shell access is unavailable, set `CLOUDINARY_MIGRATE_ON_BOOT=true` for one deploy, then set it back to `false` after migration completes.
 
 ### Optional: import your local SQL dump
 

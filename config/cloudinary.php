@@ -5,4 +5,5 @@ return [
     'api_key' => env('CLOUDINARY_API_KEY'),
     'api_secret' => env('CLOUDINARY_API_SECRET'),
     'folder' => env('CLOUDINARY_FOLDER', 'serve-god'),
+    'required' => env('CLOUDINARY_REQUIRED', false),
 ];
