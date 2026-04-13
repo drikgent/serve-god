@@ -14,7 +14,7 @@
         <a href="{{ route('admin.dashboard') }}" class="brand brand-admin">
             <span class="brand-mark admin-brand-mark">SG</span>
             <span>
-                <strong>Admin Studio</strong>
+                <strong>Serve God</strong>
                 <small>{{ auth()->user()->name }} · {{ str_replace('_', ' ', auth()->user()->role) }}</small>
             </span>
         </a>

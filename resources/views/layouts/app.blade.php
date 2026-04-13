@@ -18,7 +18,7 @@
         <a href="{{ route('home') }}" class="brand">
             <span class="brand-mark">SG</span>
             <span>
-                <strong>Serve God Studio</strong>
+                <strong>Serve God</strong>
             </span>
         </a>
 

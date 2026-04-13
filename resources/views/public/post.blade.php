@@ -52,24 +52,40 @@
     @if($relatedPosts->isNotEmpty())
         <section class="section-block">
             <div class="section-heading">
-                <h2>Related stories</h2>
+                <h2>Related photos</h2>
             </div>
-            <div class="featured-grid">
+            <div class="masonry">
                 @foreach($relatedPosts as $related)
-                    <a href="{{ route('posts.show', $related) }}" class="featured-card compact">
-                        @php
-                            $relatedMedia = $related->media->firstWhere('is_featured', true) ?? $related->media->first();
-                            $videoThumb = $relatedMedia?->thumbnail_path
-                                ?: (!\Illuminate\Support\Str::endsWith(\Illuminate\Support\Str::lower((string) $related->featured_media_url), ['.mp4', '.webm', '.mov', '.ogg']) ? $related->featured_media_url : null);
-                            $relatedUrl = $related->featured_media_type === 'video'
-                                ? ($videoThumb ?: asset('placeholder.svg'))
-                                : ($related->featured_media_url ?: asset('placeholder.svg'));
-                        @endphp
-                        <img src="{{ $relatedUrl }}" alt="{{ $related->title }}">
-                        <div class="featured-overlay">
-                            <h3>{{ $related->title }}</h3>
+                    <article class="post-card">
+                        <a href="{{ route('posts.show', $related) }}" class="media-frame">
+                            @if($related->featured_media_type === 'video')
+                                <div class="video-badge">Video</div>
+                            @endif
+                            @php
+                                $relatedMedia = $related->media->firstWhere('is_featured', true) ?? $related->media->first();
+                                $videoThumb = $relatedMedia?->thumbnail_path
+                                    ?: (!\Illuminate\Support\Str::endsWith(\Illuminate\Support\Str::lower((string) $related->featured_media_url), ['.mp4', '.webm', '.mov', '.ogg']) ? $related->featured_media_url : null);
+                                $relatedUrl = $related->featured_media_type === 'video'
+                                    ? ($videoThumb ?: asset('placeholder.svg'))
+                                    : ($related->featured_media_url ?: asset('placeholder.svg'));
+                            @endphp
+                            <img
+                                src="{{ $relatedUrl }}"
+                                alt="{{ $related->title }}"
+                                onerror="this.onerror=null;this.src='{{ asset('placeholder.svg') }}';"
+                            >
+                        </a>
+                        <div class="post-body">
+                            <div class="meta-row">
+                                <span class="meta-chip">{{ optional($related->category)->name ?? 'Unsorted' }}</span>
+                                <span>{{ optional($related->published_at)->format('M d, Y') }}</span>
+                            </div>
+                            <h3><a href="{{ route('posts.show', $related) }}">{{ $related->title }}</a></h3>
+                            <div class="author-row">
+                                <span>By {{ $related->author->name }}</span>
+                            </div>
                         </div>
-                    </a>
+                    </article>
                 @endforeach
             </div>
         </section>
