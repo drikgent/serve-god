@@ -40,7 +40,11 @@
                             ? ($videoThumb ?: asset('placeholder.svg'))
                             : ($post->featured_media_url ?: asset('placeholder.svg'));
                     @endphp
-                    <img src="{{ $featuredUrl }}" alt="{{ $post->title }}">
+                    <img
+                        src="{{ $featuredUrl }}"
+                        alt="{{ $post->title }}"
+                        onerror="this.onerror=null;this.src='{{ asset('placeholder.svg') }}';"
+                    >
                 </a>
                 <div class="post-body">
                     <div class="meta-row">

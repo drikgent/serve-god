@@ -10,11 +10,10 @@ mkdir -p "$UPLOADS_DIR/images"
 mkdir -p "$UPLOADS_DIR/videos"
 mkdir -p "$UPLOADS_DIR/thumbnails"
 
-# If the repo already contains uploads, seed them into the runtime uploads directory once.
+# If the repo already contains uploads, merge them into runtime uploads.
+# This restores committed starter media while keeping runtime uploads.
 if [ -d public/uploads ] && [ ! -L public/uploads ]; then
-  if [ -z "$(find "$UPLOADS_DIR" -type f -print -quit 2>/dev/null)" ]; then
-    cp -a public/uploads/. "$UPLOADS_DIR"/
-  fi
+  cp -an public/uploads/. "$UPLOADS_DIR"/
 fi
 
 if [ -e public/uploads ] && [ ! -L public/uploads ]; then
@@ -27,6 +26,7 @@ fi
 
 php artisan migrate --force
 php artisan db:seed --class=Database\\Seeders\\DatabaseSeeder --force
+php artisan media:generate-thumbnails
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache

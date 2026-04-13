@@ -21,6 +21,7 @@ FROM php:8.3-cli-bookworm
 WORKDIR /opt/render/project/src
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
     unzip \
     libpq-dev \
     && docker-php-ext-install -j"$(nproc)" pdo pdo_pgsql \
