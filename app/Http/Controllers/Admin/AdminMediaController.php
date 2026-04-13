@@ -134,7 +134,7 @@ class AdminMediaController extends Controller
                 return $cloudinary->upload($file);
             } catch (\Throwable $e) {
                 throw ValidationException::withMessages([
-                    'replacement_file' => 'Cloudinary upload failed. Check CLOUDINARY_* env vars and active API key/secret.',
+                    'replacement_file' => 'Cloudinary upload failed: '.$e->getMessage(),
                 ]);
             }
         }

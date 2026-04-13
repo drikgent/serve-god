@@ -191,7 +191,7 @@ class AdminPostController extends Controller
                 return $cloudinary->upload($file);
             } catch (\Throwable $e) {
                 throw ValidationException::withMessages([
-                    'media_files' => 'Cloudinary upload failed. Check CLOUDINARY_* env vars and active API key/secret.',
+                    'media_files' => 'Cloudinary upload failed: '.$e->getMessage(),
                 ]);
             }
         }
