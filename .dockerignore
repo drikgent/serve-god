@@ -1,0 +1,17 @@
+.git
+.github
+.deploy-stage-*
+node_modules
+vendor
+storage/logs
+storage/framework/cache/data
+storage/framework/sessions
+storage/framework/views
+.env
+.env.*
+composer.phar
+composer-download.phar
+tools/ffmpeg*
+serve-god-deploy-*.zip
+serve-god-deploy-clean-*.zip
+serve-god-deploy-nomedia-*.zip
