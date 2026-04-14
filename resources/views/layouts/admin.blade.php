@@ -11,8 +11,8 @@
 </head>
 <body class="admin-shell">
     @php($adminUser = auth()->user())
-    @php($adminName = $adminUser?->name ?: 'Admin')
-    @php($adminRole = trim(str_replace('_', ' ', (string) ($adminUser?->role ?? ''))))
+    @php($adminName = optional($adminUser)->name ?: 'Admin')
+    @php($adminRole = trim(str_replace('_', ' ', (string) (optional($adminUser)->role ?? ''))))
     <span id="adminMenuAnchor"></span>
     <button class="admin-mobile-menu" type="button" aria-label="Open admin menu" aria-controls="adminSidebar" aria-expanded="false">
         <span></span>
