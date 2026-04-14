@@ -942,6 +942,11 @@ button {
     padding: 2rem;
 }
 
+.admin-login-shell-single {
+    grid-template-columns: 1fr;
+    max-width: 620px;
+}
+
 .admin-login-showcase,
 .admin-login-panel {
     border-radius: 36px;
