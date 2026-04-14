@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('site.css') }}?v=20260414d">
+    <link rel="stylesheet" href="{{ asset('site.css') }}?v=20260414e">
 </head>
 <body class="admin-shell">
     @php($adminUser = auth()->user())
@@ -65,9 +65,15 @@
                 return;
             }
 
+            const isTouchDevice = () => (
+                mobileQuery.matches ||
+                window.matchMedia('(pointer: coarse)').matches ||
+                navigator.maxTouchPoints > 0
+            );
+
             const placeToggle = () => {
                 const actions = document.querySelector('.admin-header-actions');
-                if (mobileQuery.matches && actions) {
+                if (isTouchDevice() && actions) {
                     actions.appendChild(toggle);
                     return;
                 }
@@ -99,17 +105,20 @@
             navLinks.forEach((link) => link.addEventListener('click', closeMenu));
 
             window.addEventListener('resize', () => {
-                if (!mobileQuery.matches) {
+                if (!isTouchDevice()) {
                     shell.classList.remove('admin-sidebar-open');
+                    shell.classList.remove('admin-touch');
                     toggle.setAttribute('aria-expanded', 'false');
                     sidebar.setAttribute('aria-hidden', 'false');
                 } else if (!shell.classList.contains('admin-sidebar-open')) {
+                    shell.classList.add('admin-touch');
                     sidebar.setAttribute('aria-hidden', 'true');
                 }
                 placeToggle();
             });
 
-            if (mobileQuery.matches) {
+            if (isTouchDevice()) {
+                shell.classList.add('admin-touch');
                 sidebar.setAttribute('aria-hidden', 'true');
             }
             placeToggle();
