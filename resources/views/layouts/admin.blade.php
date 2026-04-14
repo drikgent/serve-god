@@ -59,13 +59,14 @@
             const sidebar = document.getElementById('adminSidebar');
             const anchor = document.getElementById('adminMenuAnchor');
             const navLinks = sidebar ? sidebar.querySelectorAll('a') : [];
+            const mobileQuery = window.matchMedia('(max-width: 760px) and (pointer: coarse)');
             if (!toggle || !overlay || !close || !sidebar || !anchor) {
                 return;
             }
 
             const placeToggle = () => {
                 const actions = document.querySelector('.admin-header-actions');
-                if (window.innerWidth <= 760 && actions) {
+                if (mobileQuery.matches && actions) {
                     actions.appendChild(toggle);
                     return;
                 }
@@ -100,7 +101,7 @@
             navLinks.forEach((link) => link.addEventListener('click', closeMenu));
 
             window.addEventListener('resize', () => {
-                if (window.innerWidth > 760) {
+                if (!mobileQuery.matches) {
                     shell.classList.remove('admin-sidebar-open');
                     toggle.setAttribute('aria-expanded', 'false');
                     sidebar.setAttribute('aria-hidden', 'false');
@@ -110,7 +111,7 @@
                 placeToggle();
             });
 
-            if (window.innerWidth <= 760) {
+            if (mobileQuery.matches) {
                 sidebar.setAttribute('aria-hidden', 'true');
             }
             placeToggle();
