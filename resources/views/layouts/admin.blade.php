@@ -13,7 +13,6 @@
     @php($adminUser = auth()->user())
     @php($adminName = optional($adminUser)->name ?: 'Admin')
     @php($adminRole = trim(str_replace('_', ' ', (string) (optional($adminUser)->role ?? ''))))
-    <span id="adminMenuAnchor"></span>
     <button class="admin-mobile-menu" type="button" aria-label="Open admin menu" aria-controls="adminSidebar" aria-expanded="false">
         <span></span>
         <span></span>
@@ -60,10 +59,9 @@
             const overlay = document.querySelector('.admin-mobile-overlay');
             const close = document.querySelector('.admin-mobile-close');
             const sidebar = document.getElementById('adminSidebar');
-            const anchor = document.getElementById('adminMenuAnchor');
             const navLinks = sidebar ? sidebar.querySelectorAll('a') : [];
             const mobileQuery = window.matchMedia('(max-width: 760px) and (pointer: coarse)');
-            if (!toggle || !overlay || !close || !sidebar || !anchor) {
+            if (!toggle || !overlay || !close || !sidebar) {
                 return;
             }
 
@@ -73,10 +71,7 @@
                     actions.appendChild(toggle);
                     return;
                 }
-
-                if (anchor.nextSibling !== toggle) {
-                    anchor.parentNode.insertBefore(toggle, anchor.nextSibling);
-                }
+                document.body.insertBefore(toggle, document.body.firstChild);
             };
 
             const closeMenu = () => {
