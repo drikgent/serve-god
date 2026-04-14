@@ -1652,3 +1652,63 @@ button {
         display: none !important;
     }
 }
+
+/* Dedicated desktop dashboard UI */
+@media (min-width: 1001px) and (pointer: fine) {
+    .admin-shell {
+        display: grid !important;
+        grid-template-columns: 280px minmax(980px, 1fr) !important;
+        align-items: start;
+    }
+
+    .admin-main {
+        width: 100% !important;
+        min-width: 980px !important;
+        padding: 2rem 2rem 2.4rem !important;
+    }
+
+    .admin-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .admin-header-actions {
+        display: flex !important;
+        align-items: center;
+        gap: 0.65rem;
+    }
+
+    .admin-header .admin-primary-button {
+        width: auto !important;
+        min-width: 190px;
+    }
+
+    .admin-stats-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(180px, 1fr)) !important;
+        gap: 1rem !important;
+    }
+
+    .admin-stats-grid .admin-card {
+        min-height: 145px;
+    }
+
+    .admin-grid.dashboard-grid {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        gap: 1rem !important;
+    }
+
+    .admin-grid.dashboard-grid .admin-panel {
+        min-height: 520px;
+    }
+
+    .admin-grid.dashboard-grid .mini-media-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 0.75rem;
+    }
+}
