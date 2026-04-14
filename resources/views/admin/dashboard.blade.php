@@ -27,7 +27,7 @@
         </article>
     </section>
 
-    <section class="admin-grid">
+    <section class="admin-grid dashboard-grid">
         <article class="admin-panel dashboard-scroll-panel">
             <div class="section-heading">
                 <h2>Recent posts</h2>

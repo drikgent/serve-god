@@ -10,12 +10,20 @@
     <link rel="stylesheet" href="{{ asset('site.css') }}">
 </head>
 <body class="admin-shell">
-    <aside class="admin-sidebar">
+    <button class="admin-mobile-menu" type="button" aria-label="Open admin menu" aria-controls="adminSidebar" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <button class="admin-mobile-overlay" type="button" aria-label="Close admin menu"></button>
+
+    <aside id="adminSidebar" class="admin-sidebar" aria-hidden="false">
+        <button class="admin-mobile-close" type="button" aria-label="Close admin menu">&times;</button>
         <a href="{{ route('admin.dashboard') }}" class="brand brand-admin">
             <span class="brand-mark admin-brand-mark">SG</span>
             <span>
                 <strong>Serve God</strong>
-                <small>{{ auth()->user()->name }} · {{ str_replace('_', ' ', auth()->user()->role) }}</small>
+                <small>{{ auth()->user()->name }} &middot; {{ str_replace('_', ' ', auth()->user()->role) }}</small>
             </span>
         </a>
 
@@ -40,5 +48,57 @@
 
         @yield('content')
     </main>
+
+    <script>
+        (() => {
+            const shell = document.body;
+            const toggle = document.querySelector('.admin-mobile-menu');
+            const overlay = document.querySelector('.admin-mobile-overlay');
+            const close = document.querySelector('.admin-mobile-close');
+            const sidebar = document.getElementById('adminSidebar');
+            const navLinks = sidebar ? sidebar.querySelectorAll('a') : [];
+            if (!toggle || !overlay || !close || !sidebar) {
+                return;
+            }
+
+            const closeMenu = () => {
+                shell.classList.remove('admin-sidebar-open');
+                toggle.setAttribute('aria-expanded', 'false');
+                sidebar.setAttribute('aria-hidden', 'true');
+            };
+
+            const openMenu = () => {
+                shell.classList.add('admin-sidebar-open');
+                toggle.setAttribute('aria-expanded', 'true');
+                sidebar.setAttribute('aria-hidden', 'false');
+            };
+
+            toggle.addEventListener('click', () => {
+                if (shell.classList.contains('admin-sidebar-open')) {
+                    closeMenu();
+                    return;
+                }
+                openMenu();
+            });
+
+            overlay.addEventListener('click', closeMenu);
+            close.addEventListener('click', closeMenu);
+            navLinks.forEach((link) => link.addEventListener('click', closeMenu));
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 760) {
+                    shell.classList.remove('admin-sidebar-open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                    sidebar.setAttribute('aria-hidden', 'false');
+                } else if (!shell.classList.contains('admin-sidebar-open')) {
+                    sidebar.setAttribute('aria-hidden', 'true');
+                }
+            });
+
+            if (window.innerWidth <= 760) {
+                sidebar.setAttribute('aria-hidden', 'true');
+            }
+        })();
+    </script>
 </body>
 </html>
