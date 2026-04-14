@@ -7,7 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('site.css') }}?v={{ @filemtime(public_path('site.css')) ?: time() }}">
+    @php($siteCssVersion = file_exists(public_path('site.css')) ? filemtime(public_path('site.css')) : time())
+    <link rel="stylesheet" href="{{ asset('site.css') }}?v={{ $siteCssVersion }}">
 </head>
 <body class="admin-shell">
     <span id="adminMenuAnchor"></span>
