@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        User::updateOrCreate(
+        User::firstOrCreate(
             ['email' => 'admin@servegod.test'],
             [
                 'name' => 'Ava Sterling',
@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        User::updateOrCreate(
+        User::firstOrCreate(
             ['email' => 'editor@servegod.test'],
             [
                 'name' => 'Noah Vale',

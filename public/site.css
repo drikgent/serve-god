@@ -1161,6 +1161,33 @@ button {
         justify-content: flex-start;
     }
 
+    .admin-header {
+        display: grid;
+        grid-template-columns: 1fr;
+        align-items: start;
+        gap: 0.6rem;
+        margin-bottom: 0.7rem;
+    }
+
+    .admin-header .primary-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .admin-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem;
+    }
+
+    .admin-stats-grid .admin-card {
+        padding: 0.9rem;
+        border-radius: 18px;
+    }
+
+    .admin-stats-grid .admin-card strong {
+        font-size: 2rem;
+    }
+
     .admin-list-row {
         flex-direction: column;
         align-items: stretch;
@@ -1268,6 +1295,14 @@ button {
     .author-row,
     .detail-meta {
         gap: 0.45rem;
+    }
+
+    .admin-stats-grid .admin-card {
+        padding: 0.8rem;
+    }
+
+    .admin-stats-grid .admin-card strong {
+        font-size: 1.75rem;
     }
 }
 

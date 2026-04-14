@@ -32,7 +32,7 @@
                         <form method="POST" action="{{ route('admin.admins.update', $admin) }}" class="admin-inline-name-form">
                             @csrf
                             @method('PUT')
-                            <input type="text" name="name" value="{{ old('name', $admin->name) }}" required>
+                            <input type="text" name="name" value="{{ $admin->name }}" required>
                             <button type="submit" class="ghost-button">Save</button>
                         </form>
                         <span>{{ $admin->email }} &bull; {{ str_replace('_', ' ', ucfirst($admin->role)) }}</span>
