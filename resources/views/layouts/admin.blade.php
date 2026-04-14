@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('site.css') }}">
 </head>
 <body class="admin-shell">
+    <span id="adminMenuAnchor"></span>
     <button class="admin-mobile-menu" type="button" aria-label="Open admin menu" aria-controls="adminSidebar" aria-expanded="false">
         <span></span>
         <span></span>
@@ -56,10 +57,23 @@
             const overlay = document.querySelector('.admin-mobile-overlay');
             const close = document.querySelector('.admin-mobile-close');
             const sidebar = document.getElementById('adminSidebar');
+            const anchor = document.getElementById('adminMenuAnchor');
             const navLinks = sidebar ? sidebar.querySelectorAll('a') : [];
-            if (!toggle || !overlay || !close || !sidebar) {
+            if (!toggle || !overlay || !close || !sidebar || !anchor) {
                 return;
             }
+
+            const placeToggle = () => {
+                const actions = document.querySelector('.admin-header-actions');
+                if (window.innerWidth <= 760 && actions) {
+                    actions.appendChild(toggle);
+                    return;
+                }
+
+                if (anchor.nextSibling !== toggle) {
+                    anchor.parentNode.insertBefore(toggle, anchor.nextSibling);
+                }
+            };
 
             const closeMenu = () => {
                 shell.classList.remove('admin-sidebar-open');
@@ -93,11 +107,13 @@
                 } else if (!shell.classList.contains('admin-sidebar-open')) {
                     sidebar.setAttribute('aria-hidden', 'true');
                 }
+                placeToggle();
             });
 
             if (window.innerWidth <= 760) {
                 sidebar.setAttribute('aria-hidden', 'true');
             }
+            placeToggle();
         })();
     </script>
 </body>

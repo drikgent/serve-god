@@ -1168,16 +1168,16 @@ button {
     }
 
     .admin-main {
-        padding-top: 4.6rem;
+        padding-top: 0.9rem;
     }
 
     .admin-mobile-menu {
-        position: fixed;
-        top: 0.9rem;
-        right: 0.9rem;
-        z-index: 1300;
+        position: static;
+        z-index: 1;
         width: 2.8rem;
         height: 2.8rem;
+        flex: 0 0 auto;
+        margin: 0;
         border-radius: 14px;
         border: 1px solid rgba(17, 17, 17, 0.14);
         background: #ffffff;
@@ -1255,8 +1255,15 @@ button {
         margin-bottom: 0.7rem;
     }
 
+    .admin-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+    }
+
     .admin-header .primary-button {
-        width: 100%;
+        flex: 1 1 auto;
+        width: auto;
         text-align: center;
     }
 
@@ -1281,18 +1288,10 @@ button {
 
     .dashboard-grid {
         display: grid;
-        grid-auto-flow: column;
-        grid-auto-columns: minmax(88vw, 88vw);
+        grid-template-columns: 1fr;
         gap: 0.8rem;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 0.25rem;
-    }
-
-    .dashboard-grid .admin-panel {
-        scroll-snap-align: start;
+        overflow: visible;
+        padding-bottom: 0;
     }
 
     .dashboard-grid .admin-list-row {
@@ -1425,10 +1424,6 @@ button {
 
     .admin-stats-grid .admin-card strong {
         font-size: 1.75rem;
-    }
-
-    .dashboard-grid {
-        grid-auto-columns: minmax(92vw, 92vw);
     }
 
     .dashboard-grid .mini-media-grid {

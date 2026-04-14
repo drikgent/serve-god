@@ -5,7 +5,9 @@
         <div>
             <span class="eyebrow admin-eyebrow">Dashboard</span>
         </div>
-        <a href="{{ route('admin.posts.create') }}" class="primary-button admin-primary-button">Create Post</a>
+        <div class="admin-header-actions">
+            <a href="{{ route('admin.posts.create') }}" class="primary-button admin-primary-button">Create Post</a>
+        </div>
     </section>
 
     <section class="stats-grid admin-stats-grid">
