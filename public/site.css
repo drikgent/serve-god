@@ -1614,3 +1614,41 @@ button {
         display: none !important;
     }
 }
+
+/* Force desktop/laptop pointer devices to keep true desktop admin layout */
+@media (pointer: fine) {
+    .admin-shell {
+        display: grid !important;
+        grid-template-columns: 280px minmax(0, 1fr) !important;
+    }
+
+    .admin-sidebar {
+        position: static !important;
+        width: auto !important;
+        min-height: 100vh !important;
+        transform: none !important;
+        border-right: 1px solid rgba(36, 31, 27, 0.08) !important;
+        border-left: none !important;
+        border-bottom: none !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+    }
+
+    .admin-main {
+        padding: 2rem !important;
+        min-width: 0;
+    }
+
+    .admin-grid.dashboard-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 1rem !important;
+        overflow: visible !important;
+    }
+
+    .admin-mobile-menu,
+    .admin-mobile-overlay,
+    .admin-mobile-close {
+        display: none !important;
+    }
+}
