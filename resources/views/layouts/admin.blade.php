@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="{{ asset('site.css') }}">
 </head>
 <body class="admin-shell">
+    @php($adminUser = auth()->user())
+    @php($adminName = $adminUser?->name ?: 'Admin')
+    @php($adminRole = trim(str_replace('_', ' ', (string) ($adminUser?->role ?? ''))))
     <span id="adminMenuAnchor"></span>
     <button class="admin-mobile-menu" type="button" aria-label="Open admin menu" aria-controls="adminSidebar" aria-expanded="false">
         <span></span>
@@ -24,7 +27,7 @@
             <span class="brand-mark admin-brand-mark">SG</span>
             <span>
                 <strong>Serve God</strong>
-                <small>{{ auth()->user()->name }} &middot; {{ str_replace('_', ' ', auth()->user()->role) }}</small>
+                <small>{{ $adminName }}@if($adminRole !== '') &middot; {{ $adminRole }}@endif</small>
             </span>
         </a>
 

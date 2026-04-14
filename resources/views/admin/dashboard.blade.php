@@ -39,7 +39,7 @@
                 <div class="admin-list-row">
                     <div>
                         <strong>{{ $post->title }}</strong>
-                        <span>{{ optional($post->category)->name ?? 'Unsorted' }} · {{ ucfirst($post->status) }}</span>
+                        <span>{{ optional($post->category)->name ?? 'Unsorted' }} - {{ ucfirst($post->status) }}</span>
                     </div>
                     <a class="admin-inline-link" href="{{ route('admin.posts.edit', $post) }}">Edit</a>
                 </div>
