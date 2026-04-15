@@ -77,31 +77,28 @@
             const panels = document.querySelectorAll(".admin-login-slider-inner");
             if (!panels.length) return;
 
-            let visible = false;
-
+            const body = document.body;
+            body.classList.add("admin-login-intro");
             const getTransform = (value) => `translateY(${value})`;
+            const introDelayMs = 450;
+            const introDurationMs = 2000;
+            const formEntranceDelayMs = 180;
 
             panels.forEach((panel, index) => {
                 const isEven = index % 2 === 0;
                 panel.style.transform = isEven ? getTransform("-100%") : getTransform("100%");
             });
 
-            const animatePanel = () => {
+            const playIntroOnce = () => {
                 panels.forEach((panel, index) => {
-                    const isEven = index % 2 === 0;
-
-                    if (!visible) {
-                        panel.style.transform = getTransform("0");
-                    } else {
-                        panel.style.transform = isEven ? getTransform("100%") : getTransform("-100%");
-                    }
+                    panel.style.transform = getTransform("0");
                 });
-
-                visible = !visible;
             };
 
-            setTimeout(animatePanel, 500);
-            setInterval(animatePanel, 9000);
+            setTimeout(playIntroOnce, introDelayMs);
+            setTimeout(() => {
+                body.classList.add("admin-login-intro-done");
+            }, introDelayMs + introDurationMs + formEntranceDelayMs);
         })();
     </script>
 </body>
