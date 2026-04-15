@@ -1109,7 +1109,7 @@ button {
 
 .admin-login-page.admin-login-intro .admin-login-panel {
     opacity: 0;
-    transform: translateY(20px) scale(0.985);
+    transform: translateX(-44px) scale(0.985);
     filter: blur(4px);
 }
 
@@ -1120,12 +1120,12 @@ button {
 @keyframes admin-login-panel-in {
     from {
         opacity: 0;
-        transform: translateY(20px) scale(0.985);
+        transform: translateX(-44px) scale(0.985);
         filter: blur(4px);
     }
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateX(0) scale(1);
         filter: blur(0);
     }
 }
