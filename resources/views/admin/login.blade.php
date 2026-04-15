@@ -10,6 +10,40 @@
     <link rel="stylesheet" href="{{ asset('site.css') }}">
 </head>
 <body class="admin-login-page">
+    <div class="admin-login-slider" aria-hidden="true">
+        <div class="admin-login-slider-track">
+            <div class="admin-login-slider-panel">
+                <div class="admin-login-slider-inner">
+                    <img src="https://picsum.photos/id/1015/800/1200" alt="">
+                </div>
+            </div>
+            <div class="admin-login-slider-panel">
+                <div class="admin-login-slider-inner">
+                    <img src="https://picsum.photos/id/1016/800/1200" alt="">
+                </div>
+            </div>
+            <div class="admin-login-slider-panel">
+                <div class="admin-login-slider-inner">
+                    <img src="https://picsum.photos/id/1025/800/1200" alt="">
+                </div>
+            </div>
+            <div class="admin-login-slider-panel">
+                <div class="admin-login-slider-inner">
+                    <img src="https://picsum.photos/id/1035/800/1200" alt="">
+                </div>
+            </div>
+            <div class="admin-login-slider-panel">
+                <div class="admin-login-slider-inner">
+                    <img src="https://picsum.photos/id/1043/800/1200" alt="">
+                </div>
+            </div>
+            <div class="admin-login-slider-panel">
+                <div class="admin-login-slider-inner">
+                    <img src="https://picsum.photos/id/1050/800/1200" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
     <main class="admin-login-shell admin-login-shell-single">
         <section class="admin-login-panel">
             <div class="admin-login-panel-head">
@@ -38,5 +72,37 @@
             </form>
         </section>
     </main>
+    <script>
+        (function () {
+            const panels = document.querySelectorAll(".admin-login-slider-inner");
+            if (!panels.length) return;
+
+            let visible = false;
+
+            const getTransform = (value) => `translateY(${value})`;
+
+            panels.forEach((panel, index) => {
+                const isEven = index % 2 === 0;
+                panel.style.transform = isEven ? getTransform("-100%") : getTransform("100%");
+            });
+
+            const animatePanel = () => {
+                panels.forEach((panel, index) => {
+                    const isEven = index % 2 === 0;
+
+                    if (!visible) {
+                        panel.style.transform = getTransform("0");
+                    } else {
+                        panel.style.transform = isEven ? getTransform("100%") : getTransform("-100%");
+                    }
+                });
+
+                visible = !visible;
+            };
+
+            setTimeout(animatePanel, 500);
+            setInterval(animatePanel, 9000);
+        })();
+    </script>
 </body>
 </html>
