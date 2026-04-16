@@ -245,7 +245,7 @@ button {
 .filter-form select,
 .toolbar select,
 .toolbar button,
-.admin-login-card input,
+.admin-login-card input:not([type="checkbox"]),
 .contact-card input,
 .contact-card textarea,
 .stack-form input,
@@ -978,10 +978,10 @@ button {
 
 .admin-login-slider-inner {
     position: absolute;
-    top: -100%;
-    left: -25%;
-    width: 150%;
-    height: 200%;
+    top: -70%;
+    left: -15%;
+    width: 130%;
+    height: 170%;
     transform: translateY(0);
     transition: transform 2s ease-in-out;
 }
@@ -989,7 +989,7 @@ button {
 .admin-login-slider-panel img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
     opacity: 0.5;
 }
@@ -1086,7 +1086,7 @@ button {
     color: #1e1b18;
 }
 
-.admin-login-card input {
+.admin-login-card input:not([type="checkbox"]) {
     background: #ffffff;
     border-color: rgba(36, 31, 27, 0.1);
     color: #1e1b18;
@@ -1094,6 +1094,28 @@ button {
 
 .admin-login-card input::placeholder {
     color: #8a8077;
+}
+
+.admin-login-card .checkbox-row {
+    justify-content: flex-start;
+    gap: 0.55rem;
+    flex-wrap: nowrap;
+    margin: 0.15rem 0 0.1rem;
+}
+
+.admin-login-card .checkbox-row input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    padding: 0;
+    margin: 0;
+    border-radius: 4px;
+    accent-color: #111111;
+    flex: 0 0 auto;
+}
+
+.admin-login-card .checkbox-row span {
+    color: #1e1b18;
+    font-size: 0.92rem;
 }
 
 .admin-login-card button {
