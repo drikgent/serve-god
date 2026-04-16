@@ -14,32 +14,32 @@
         <div class="admin-login-slider-track">
             <div class="admin-login-slider-panel">
                 <div class="admin-login-slider-inner">
-                    <img src="https://picsum.photos/id/1015/800/1200" alt="">
+                    <img src="{{ asset('admin-login/rizzal.png') }}" alt="">
                 </div>
             </div>
             <div class="admin-login-slider-panel">
                 <div class="admin-login-slider-inner">
-                    <img src="https://picsum.photos/id/1016/800/1200" alt="">
+                    <img src="{{ asset('admin-login/john-weak.jpg') }}" alt="">
                 </div>
             </div>
             <div class="admin-login-slider-panel">
                 <div class="admin-login-slider-inner">
-                    <img src="https://picsum.photos/id/1025/800/1200" alt="">
+                    <img src="{{ asset('admin-login/paul.jpg') }}" alt="">
                 </div>
             </div>
             <div class="admin-login-slider-panel">
                 <div class="admin-login-slider-inner">
-                    <img src="https://picsum.photos/id/1035/800/1200" alt="">
+                    <img src="{{ asset('admin-login/no-context.jpg') }}" alt="">
                 </div>
             </div>
             <div class="admin-login-slider-panel">
                 <div class="admin-login-slider-inner">
-                    <img src="https://picsum.photos/id/1043/800/1200" alt="">
+                    <img src="{{ asset('admin-login/bull.jpg') }}" alt="">
                 </div>
             </div>
             <div class="admin-login-slider-panel">
                 <div class="admin-login-slider-inner">
-                    <img src="https://picsum.photos/id/1050/800/1200" alt="">
+                    <img src="{{ asset('admin-login/slide-6.jpg') }}" alt="">
                 </div>
             </div>
         </div>
